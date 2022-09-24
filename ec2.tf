@@ -99,16 +99,16 @@ resource "aws_instance" "ec2_instance" {
 
 
 # an empty resource block
-resource "null_resource" "name" {
+//resource "null_resource" "name" {
 
   # ssh into the ec2 instance 
-  connection {
-    type        = "ssh"
-    user        = "ubuntu"
-    private_key = file("~/Downloads/jenkins_key.pem")
-    host        = aws_instance.ec2_instance.public_ip
-    timeout = "60m"
-  }
+  //connection {
+  //  type        = "ssh"
+  //  user        = "ubuntu"
+  //  private_key = file("~/Downloads/jenkins_key.pem")
+  //  host        = aws_instance.ec2_instance.public_ip
+  //  timeout = "60m"
+  //}
 
     //provisioner "file" {
     //    destination = "/etc/ssh/sshd_config"
@@ -123,25 +123,25 @@ resource "null_resource" "name" {
 
   # copy the install_jenkins.sh file from your computer to the ec2 instance 
   
-  provisioner "file" {
-    source      = "install_jenkins.sh"
-    destination = "/tmp/install_jenkins.sh"
-  }
+  //provisioner "file" {
+  //  source      = "install_jenkins.sh"
+  //  destination = "/tmp/install_jenkins.sh"
+  //}
 
   # set permissions and run the install_jenkins.sh file
-  provisioner "remote-exec" {
-    inline = [
-        "sudo chmod +x /tmp/install_jenkins.sh",
-        "sh /tmp/install_jenkins.sh",
-    ]
-  }
+  //provisioner "remote-exec" {
+  //  inline = [
+  //      "sudo chmod +x /tmp/install_jenkins.sh",
+  //     "sh /tmp/install_jenkins.sh",
+  //  ]
+  //}
 
   # wait for ec2 to be created
-  depends_on = [aws_instance.ec2_instance]
-}
+  //depends_on = [aws_instance.ec2_instance]
+//}
 
 
 # print the url of the jenkins server
-output "website_url" {
-  value     = join ("", ["http://", aws_instance.ec2_instance.public_dns, ":", "8080"])
-}
+//output "website_url" {
+//  value     = join ("", ["http://", aws_instance.ec2_instance.public_dns, ":", "8080"])
+//}
