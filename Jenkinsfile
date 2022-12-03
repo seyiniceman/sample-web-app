@@ -1,13 +1,10 @@
 pipeline {
   agent any
   environment {
-       imagename = "austinobioma/tomcat"
+       imagename = "austinobioma/webapp"
        registryCredential = 'DockerHub'
        dockerImage = ''
            }
-  tools {
-    maven 'Maven' 
-       }
   stages {
     stage ('Build') {
       steps {
@@ -37,13 +34,5 @@ pipeline {
               sh "docker rmi $imagename:latest"
                         }
             }
-    stage ('Deploy To Tomcat Server') {
-      steps{
-        script {
-         deploy adapters: [tomcat9(credentialsId: 'Deployer', path: '', url: 'http://18.209.228.246:8080')], contextPath: '/hello-world', onFailure: false, war: '**/hello-world.war'
       }
-     }
-   }
- }
-}
-
+  }
