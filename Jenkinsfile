@@ -1,38 +1,69 @@
 pipeline {
-  agent any
-  environment {
-       imagename = "austinobioma/webapp"
-       registryCredential = 'DockerHub'
-       dockerImage = ''
-           }
-  stages {
-    stage ('Build') {
-      steps {
-        sh 'mvn clean package'
+    agent any
+    environment {
+        VERSION = "${env.BUILD_ID}"
+        AWS_ACCOUNT_ID="111393898725"
+        AWS_DEFAULT_REGION="us-east-1"
+        IMAGE_REPO_NAME="docker-class"
+        IMAGE_TAG= "${env.BUILD_ID}"
+        REPOSITORY_URI = "111393898725.dkr.ecr.us-east-1.amazonaws.com/docker-class"
+    }
+    stages {
+        stage('Git checkout') {
+            steps {
+                git branch: 'main', credentialsId: '', url: 'https://github.com/obiomaokorowu/sample-web-app.git'
+            }
+        }
+         stage('Logging into AWS ECR') {
+                     environment {
+                        AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
+                        AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
+                         
+                   }
+                     steps {
+                       script{
+             
+                         sh """aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"""
+                }
+                 
+            }
+        }
+      
+          stage('Building image') {
+            steps{
+              script {
+                dockerImage = docker.build "${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+        }
       }
     }
-    stage('Building Docker image') {
-          steps{
-                script {
-                     dockerImage = docker.build imagename
-                          }
-                      }
-                }
-     stage('Deploy Image') {
-           steps{
-               script {
-                    docker.withRegistry( '', registryCredential ) {
-                    dockerImage.push("$BUILD_NUMBER")
-                    dockerImage.push('latest')
-                                              }
-                                    }
-                             }
-                  }
-     stage('Remove Unused docker image') {
-          steps{
-              sh "docker rmi $imagename:$BUILD_NUMBER"
-              sh "docker rmi $imagename:latest"
-                        }
-            }
+        
+        stage('Pushing to ECR') {
+          steps{  
+            script {
+                sh """docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:$IMAGE_TAG"""
+                sh """docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"""
+         }
+        }
       }
-  }
+         
+         //stage('pull image & Deploying application on k8s cluster') {
+         //           environment {
+         //              AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
+         //              AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
+         //        }
+         //           steps {
+         //             script{
+         //               dir('kubernetes/') {
+         //                 sh 'aws eks update-kubeconfig --name myapp-eks-cluster --region us-east-1'
+         //                 sh """aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"""
+         //                 sh 'helm upgrade --install --set image.repository="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}" --set image.tag="${VERSION}" myjavaapp myapp/ ' 
+         //
+         //
+         //
+         //
+         //              }
+         //          }
+         //     }
+         //   }
+    }
+}
