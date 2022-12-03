@@ -4,9 +4,9 @@ pipeline {
         VERSION = "${env.BUILD_ID}"
         AWS_ACCOUNT_ID="111393898725"
         AWS_DEFAULT_REGION="us-east-1"
-        IMAGE_REPO_NAME="docker-class"
+        IMAGE_REPO_NAME="august-docker"
         IMAGE_TAG= "${env.BUILD_ID}"
-        REPOSITORY_URI = "111393898725.dkr.ecr.us-east-1.amazonaws.com/docker-class"
+        REPOSITORY_URI = "111393898725.dkr.ecr.us-east-1.amazonaws.com/august-docker"
     }
     stages {
         stage('Git checkout') {
