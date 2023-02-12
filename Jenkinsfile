@@ -1,3 +1,10 @@
+def remote = [:]
+    remote.name = 'Docker-server'
+    remote.host = '54.161.108.229'
+    remote.user = 'ubuntu'
+    remote.password = 'December2023#'
+    remote.allowAnyHosts = true
+
 pipeline {
     agent any
     environment {
@@ -9,13 +16,13 @@ pipeline {
         REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
     }
     stages {
-        stage('Git checkout') {
+          stage('Git checkout') {
             steps {
                 git branch: 'main', credentialsId: '', url: 'https://github.com/obiomaokorowu/sample-web-app.git'
             }
         }
 
-        stage('Logging into AWS ECR') {
+          stage('Logging into AWS ECR') {
                      environment {
                         AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
                         AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
@@ -30,7 +37,7 @@ pipeline {
             }
         }
          
-          stage('Building image') {
+          stage('Building docker image') {
             
             steps{
               script {
@@ -39,41 +46,31 @@ pipeline {
       }
     }
         
-        stage('Pushing to ECR') {
-           environment {
+          stage('Pushing to ECR') {
+             environment {
                         AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
                         AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
                          
                    }
-          steps{  
-            script {
-                withAWS(role: "dec-role", roleAccount: '111393898725') {
-                sh """aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"""
-                sh """docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:$IMAGE_TAG"""
-                sh """docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"""
+              steps{  
+                script {
+                    withAWS(role: "dec-role", roleAccount: '111393898725') {
+                    sh """aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"""
+                    sh """docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:$IMAGE_TAG"""
+                    sh """docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"""
          }
         }
       }
  }
-         
-         //stage('pull image & Deploying application on k8s cluster') {
-         //           environment {
-         //              AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
-         //              AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
-         //        }
-         //           steps {
-         //             script{
-         //               dir('kubernetes/') {
-         //                 sh 'aws eks update-kubeconfig --name myapp-eks-cluster --region us-east-1'
-         //                 sh """aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"""
-         //                 sh 'helm upgrade --install --set image.repository="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}" --set image.tag="${VERSION}" myjavaapp myapp/ ' 
-         //
-         //
-         //
-         //
-         //              }
-         //          }
-         //     }
-         //   }
+        stage('Deploy to Decker-SErver Via SSH') {
+          steps{
+      sshCommand remote: remote, command: "ls -lrt"
+      sshCommand remote: remote, command: "aws --profile dec-user ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 111393898725.dkr.ecr.us-east-1.amazonaws.com"
+      sshCommand remote: remote, command: "docker pull 111393898725.dkr.ecr.us-east-1.amazonaws.com/dec2-webapp:9"
+      sshCommand remote: remote, command: "docker run -d -p 9090:80 --name webapp 111393898725.dkr.ecr.us-east-1.amazonaws.com/dec2-webapp:9"
+      }
+      }  
+
+
     }
 }
