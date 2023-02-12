@@ -67,7 +67,7 @@ pipeline {
       sshCommand remote: remote, command: "ls -lrt"
       sshCommand remote: remote, command: "aws --profile dec-user ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 111393898725.dkr.ecr.us-east-1.amazonaws.com"
       sshCommand remote: remote, command: "docker pull 111393898725.dkr.ecr.us-east-1.amazonaws.com/dec2-webapp:9"
-      sshCommand remote: remote, command: "docker run -d -p 9090:80 --name webapp 111393898725.dkr.ecr.us-east-1.amazonaws.com/dec2-webapp:9"
+      sshCommand remote: remote, command: "docker run -d -p 80:80 --name webapp 111393898725.dkr.ecr.us-east-1.amazonaws.com/dec2-webapp:9"
       }
       }  
 
