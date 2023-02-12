@@ -6,7 +6,7 @@ pipeline {
         AWS_DEFAULT_REGION="us-east-1"
         IMAGE_REPO_NAME="dec2-wepapp"
         IMAGE_TAG= "${env.BUILD_ID}"
-        REPOSITORY_URI = "111393898725.dkr.ecr.us-east-1.amazonaws.com/dec2-webapp"
+        REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
     }
     stages {
         stage('Git checkout') {
