@@ -54,6 +54,7 @@ pipeline {
          }
         }
       }
+ }
          
          //stage('pull image & Deploying application on k8s cluster') {
          //           environment {
