@@ -4,7 +4,7 @@ pipeline {
         VERSION = "${env.BUILD_ID}"
         AWS_ACCOUNT_ID="111393898725"
         AWS_DEFAULT_REGION="us-east-1"
-        IMAGE_REPO_NAME="dec2-wepapp"
+        IMAGE_REPO_NAME="dec2-webapp"
         IMAGE_TAG= "${env.BUILD_ID}"
         REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
     }
