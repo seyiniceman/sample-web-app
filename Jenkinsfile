@@ -28,7 +28,7 @@ pipeline {
         
           stage('Pushing to ECR') {
              environment {
-                        AWS_ACCESS_KEY_ID = credentials('aws_access_key')
+                        AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
                         AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')     
                    }
               steps{  
@@ -44,8 +44,8 @@ pipeline {
           steps{
       sshCommand remote: remote, command: "ls -lrt"
       sshCommand remote: remote, command: """aws ecr --profile feb-class get-login-password --region us-east-2 | docker login --username AWS --password-stdin 011138670495.dkr.ecr.us-east-2.amazonaws.com"""
-      sshCommand remote: remote, command: "docker pull 011138670495.dkr.ecr.us-east-2.amazonaws.com/docker-class:4"
-      sshCommand remote: remote, command: "docker run -d -p 9090:80 --name webapp 011138670495.dkr.ecr.us-east-2.amazonaws.com/docker-class:4"
+      sshCommand remote: remote, command: "docker pull 011138670495.dkr.ecr.us-east-2.amazonaws.com/feb-class:5"
+      sshCommand remote: remote, command: "docker run -d -p 9090:80 --name webapp 011138670495.dkr.ecr.us-east-2.amazonaws.com/feb-class:5"
       }
       }  
 
