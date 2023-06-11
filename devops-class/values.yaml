@@ -1,11 +1,11 @@
-# Default values for myapp.
+# Default values for devops-class.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 3
 
 image:
-  repository: 011138670495.dkr.ecr.us-east-2.amazonaws.com/eks-class
+  repository: nginx
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -70,9 +70,9 @@ resources: {}
 
 autoscaling:
   enabled: false
-  minReplicas: 2
+  minReplicas: 1
   maxReplicas: 100
-  targetCPUUtilizationPercentage: 70
+  targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
 nodeSelector: {}
