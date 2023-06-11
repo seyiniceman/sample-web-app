@@ -42,7 +42,7 @@ pipeline {
                  }
                     steps {
                       script{
-                          sh 'aws eks update-kubeconfig --name myapp-eks-cluster --region us-east-1'
+                          sh 'aws eks update-kubeconfig --name myapp-eks-cluster --region us-east-2'
                           sh """aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"""
                           sh 'helm upgrade --install --set image.repository="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}" --set image.tag="${VERSION}" mywebapp ./myapp -f ./myapp/values.yaml' 
 
