@@ -5,7 +5,7 @@
 replicaCount: 3
 
 image:
-  repository: 011138670495.dkr.ecr.us-east-2.amazonaws.com/april-class
+  repository: 111393898725.dkr.ecr.us-east-2.amazonaws.com/april-class
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
