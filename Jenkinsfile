@@ -5,7 +5,7 @@ pipeline {
         VERSION = "${env.BUILD_ID}"
         AWS_ACCOUNT_ID="111393898725"
         AWS_DEFAULT_REGION="us-east-2"
-        IMAGE_REPO_NAME="january-class"
+        IMAGE_REPO_NAME="june-class"
         IMAGE_TAG= "${env.BUILD_ID}"
         REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
 
@@ -44,7 +44,7 @@ pipeline {
                       script{
                           sh 'aws eks update-kubeconfig --name myapp-eks-cluster --region us-east-2'
                           sh """aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"""
-                          sh 'helm upgrade --install --set image.repository="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}" --set image.tag="${VERSION}" jan ./jan -f ./jan/values.yaml'
+                          sh 'helm upgrade --install --namespace june --set image.repository="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}" --set image.tag="${VERSION}" june-app ./june -f ./june/values.yaml'
 
 
 
