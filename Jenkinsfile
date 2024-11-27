@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         VERSION = "${env.BUILD_ID}"
-        AWS_ACCOUNT_ID="111393898725"
-        AWS_DEFAULT_REGION="us-east-2"
+        AWS_ACCOUNT_ID="021891594207"
+        AWS_DEFAULT_REGION="eu-west-1"
         IMAGE_REPO_NAME="june-class"
         IMAGE_TAG= "${env.BUILD_ID}"
         REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
