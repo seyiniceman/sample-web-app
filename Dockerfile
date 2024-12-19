@@ -11,16 +11,16 @@ RUN yum update -y && \
 RUN cd /var/www/html
 
 # download webfiles
-RUN wget https://github.com/obiomaokorowu/webpagefiles/archive/refs/heads/main.zip
+RUN wget https://github.com/seyiniceman/Webpagefiles/archive/refs/heads/main.zip
 
 # unzip folder
 RUN unzip main.zip
 
 # copy files into html directory
-RUN cp -r webpagefiles-main/* /var/www/html/
+RUN cp -r Webpagefiles-main/* /var/www/html/
 
 # remove unwanted folder
-RUN rm -rf webpagefiles-main main.zip
+RUN rm -rf Webpagefiles-main main.zip
 
 # exposes port 80 on the container
 EXPOSE 80
