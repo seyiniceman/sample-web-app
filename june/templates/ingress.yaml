@@ -8,6 +8,10 @@ metadata:
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-west-1:021891594207:certificate/077ee42e-e702-4cd8-950f-52021c2a0860
   {{- end }}
 spec:
   {{- with .Values.ingress.className }}
